@@ -1,6 +1,4 @@
 
-import { Character } from "@/components/studio/CharacterManager";
-
 // Models
 const LLM_MODEL = "nousresearch/hermes-3-llama-3.1-405b";
 const VLM_MODEL = "nvidia/nemotron-nano-12b-v2-vl:free"; // Validated by User
@@ -43,8 +41,9 @@ export async function analyzeImage(imageUrl: string): Promise<string> {
         console.log("Visual Analysis Result:", description);
         return description;
 
-    } catch (error) {
+    } catch (error: unknown) {
         console.error("VLM Error:", error);
+        // For analyzeImage, return an empty string on error
         return "";
     }
 }
@@ -54,7 +53,7 @@ export async function analyzeImage(imageUrl: string): Promise<string> {
  */
 export async function enhancePrompt(
     rawPrompt: string,
-    characters: any[],
+    characters: Record<string, unknown>[],
     visualContext?: string
 ): Promise<string> {
 
@@ -105,7 +104,7 @@ export async function enhancePrompt(
         const data = await response.json();
         return data.choices?.[0]?.message?.content || rawPrompt;
 
-    } catch (error) {
+    } catch (error: unknown) {
         console.error("Enhance Prompt Error:", error);
         return rawPrompt;
     }

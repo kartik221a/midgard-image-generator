@@ -107,9 +107,10 @@ export const generateImageInfip = async (
 
         return { success: false, error: "No image URL in response. Raw data: " + JSON.stringify(data) };
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Infip Generation Error:", error);
-        return { success: false, error: error.message };
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        return { success: false, error: errorMessage };
     }
 };
 

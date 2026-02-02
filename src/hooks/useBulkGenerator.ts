@@ -77,8 +77,8 @@ export const useBulkGenerator = () => {
         index: number,
         activeBookId: string,
         prompts: string[],
-        characters: any[],
-        config: any
+        characters: Record<string, unknown>[],
+        config: { model: string; aspectRatio: string }
     ) => {
         // Check Status
         if (statusRef.current !== "running") return;
@@ -172,8 +172,9 @@ export const useBulkGenerator = () => {
                 processQueue(index + 1, activeBookId, prompts, characters, config);
             }, 5000); // 5s delay to avoid Rate Limits
 
-        } catch (error: any) {
-            addLog(`Error on Page ${index + 1}: ${error.message}`);
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : "Unknown error";
+            addLog(`Error on Page ${index + 1}: ${errorMessage}`);
             // Retry or Skip? For now, we'll pause on error or skip. 
             // Let's pause to let user intervene.
             setStatus("paused");
