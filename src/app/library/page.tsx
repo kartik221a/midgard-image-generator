@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -10,7 +11,7 @@ import Link from "next/link";
 interface Book {
     id: string;
     title: string;
-    createdAt: any;
+    createdAt: { toDate: () => Date; toMillis?: () => number };
     totalPages: number;
     status: string;
     config: { model: string; aspectRatio: string };

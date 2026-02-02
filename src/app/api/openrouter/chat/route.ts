@@ -57,9 +57,9 @@ export async function POST(request: Request) {
                     break;
                 }
 
-            } catch (err: any) {
+            } catch (err: unknown) {
                 console.error(`[OpenRouter] Network failure on attempt ${attempt + 1}:`, err);
-                lastError = err.message;
+                lastError = err instanceof Error ? err.message : "Network error";
             }
             attempt++;
         }
@@ -79,10 +79,10 @@ export async function POST(request: Request) {
         const data = await response.json();
         return NextResponse.json(data);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("OpenRouter Proxy Error:", error);
         return NextResponse.json(
-            { success: false, error: "Internal Server Error", details: error.message },
+            { success: false, error: "Internal Server Error", details: error instanceof Error ? error.message : "Unknown error" },
             { status: 500 }
         );
     }

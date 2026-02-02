@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, doc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { useAuth } from "@/context/AuthContext";
@@ -10,6 +10,7 @@ import { generateImageInfip } from "@/lib/infip";
 
 interface BulkGeneratorProps {
     prompts: string[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     characters: any[];
     config: { model: string; aspectRatio: string };
     title?: string;
@@ -21,11 +22,12 @@ export const useBulkGenerator = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [logs, setLogs] = useState<string[]>([]);
     const [bookId, setBookId] = useState<string | null>(null);
-    const [consistencyContext, setConsistencyContext] = useState<string | null>(null);
+
 
     // Store job config to allow resuming
     const jobConfigRef = useRef<{
         prompts: string[];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         characters: any[];
         config: { model: string; aspectRatio: string };
         bookId: string;
@@ -67,8 +69,8 @@ export const useBulkGenerator = () => {
             // Recursive function usually easier to control pause/stop.
             processQueue(0, bookRef.id, prompts, characters, config);
 
-        } catch (error: any) {
-            addLog(`Error starting: ${error.message} `);
+        } catch (error: unknown) {
+            addLog(`Error starting: ${error instanceof Error ? error.message : "Unknown error"} `);
             setStatus("idle");
         }
     };
@@ -149,7 +151,7 @@ export const useBulkGenerator = () => {
                     const visualDescription = await analyzeImage(uploadData.url); // Use Cloudinary URL (publicly accessible)
                     if (visualDescription) {
                         consistencyContextRef.current = visualDescription; // Update Ref
-                        setConsistencyContext(visualDescription); // Update State for potential UI display (optional)
+
                         addLog("Visual Anchor Established: " + visualDescription.slice(0, 30) + "...");
                     }
                 } catch (analysisErr) {
@@ -202,7 +204,7 @@ export const useBulkGenerator = () => {
         setCurrentIndex(0);
         setLogs([]);
         setBookId(null);
-        setConsistencyContext(null);
+
         jobConfigRef.current = null;
     };
 

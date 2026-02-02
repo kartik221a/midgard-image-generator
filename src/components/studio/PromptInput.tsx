@@ -108,7 +108,7 @@ export default function PromptInput({ onPromptsAdded }: PromptInputProps) {
                             {isDragActive ? (
                                 <p>Drop the file here ...</p>
                             ) : (
-                                <p>Drag 'n' drop a .txt file here, or click to select file</p>
+                                <p>Drag &apos;n&apos; drop a .txt file here, or click to select file</p>
                             )}
                             <p className="text-xs mt-2 text-gray-400">.txt files only</p>
                         </div>

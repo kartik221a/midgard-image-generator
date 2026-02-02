@@ -50,10 +50,10 @@ export async function POST(request: Request) {
         console.log("Infip Upstream Response:", JSON.stringify(data, null, 2)); // DEBUG LOG
         return NextResponse.json(data);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Internal API Error:", error);
         return NextResponse.json(
-            { success: false, error: "Internal Server Error", details: error.message },
+            { success: false, error: "Internal Server Error", details: error instanceof Error ? error.message : "Unknown error" },
             { status: 500 }
         );
     }
@@ -98,10 +98,10 @@ export async function GET(request: Request) {
         const data = await response.json();
         return NextResponse.json(data);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Internal Poll Error:", error);
         return NextResponse.json(
-            { success: false, error: "Internal Server Error", details: error.message },
+            { success: false, error: "Internal Server Error", details: error instanceof Error ? error.message : "Unknown error" },
             { status: 500 }
         );
     }

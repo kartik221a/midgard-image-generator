@@ -1,10 +1,11 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useEffect, useState } from "react";
 import { db } from "@/lib/firebase";
 import { doc, getDoc, collection, query, orderBy, getDocs } from "firebase/firestore";
 import Link from "next/link";
-import { ArrowLeft, Download, Loader2, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Download, Loader2 } from "lucide-react";
 import JSZip from "jszip";
 
 interface PageData {

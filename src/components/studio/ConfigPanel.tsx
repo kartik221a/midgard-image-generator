@@ -1,6 +1,6 @@
 "use client";
 
-import { Settings, Image as ImageIcon, Box } from "lucide-react";
+import { Settings, Box } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ConfigPanelProps {

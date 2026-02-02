@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, BookOpen, Wand2, Library, Download } from "lucide-react";
+import { ArrowRight, Wand2, Library, Download } from "lucide-react";
 import Navigation from "@/components/Navigation";
 
 export default function Home() {

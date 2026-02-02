@@ -10,7 +10,7 @@ interface UserData {
     email: string;
     role: string;
     status?: "active" | "blocked";
-    createdAt?: any;
+    createdAt?: unknown;
 }
 
 export default function AdminDashboard() {

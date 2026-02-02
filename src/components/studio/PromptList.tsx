@@ -44,7 +44,7 @@ export default function PromptList({ prompts, onDelete, onEdit }: PromptListProp
             <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-gray-700">Prompt Queue ({prompts.length})</h3>
                 <button
-                    onClick={() => { if (confirm('Clear all prompts?')) prompts.forEach((_, i) => onDelete(0)) }} // Naive clear
+                    onClick={() => { if (confirm('Clear all prompts?')) prompts.forEach(() => onDelete(0)) }} // Naive clear
                     className="text-xs text-red-500 hover:text-red-700"
                 >
                     Clear All

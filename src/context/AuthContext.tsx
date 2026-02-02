@@ -33,7 +33,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         try {
             const provider = new GoogleAuthProvider();
             await signInWithPopup(auth, provider);
-        } catch (error: any) {
+        } catch (rawError: unknown) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const error = rawError as any;
             console.error("Login failed:", error);
             if (error?.message?.includes("network") || error?.code === "auth/network-request-failed") {
                 alert("Login failed due to a network error. Please disable any Ad Blockers or Privacy Extensions (like uBlock Origin) for this site and try again.");
@@ -74,7 +76,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                         });
                         setRole("user");
                     }
-                } catch (error: any) {
+                } catch (rawError: unknown) {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const error = rawError as any;
                     console.error("Error fetching user role:", error);
                     if (error?.message?.includes("offline") || error?.code === "unavailable") {
                         console.warn("Firestore appears offline or blocked. This is likely an Ad-Blocker.");

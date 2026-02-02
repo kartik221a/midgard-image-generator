@@ -1,9 +1,9 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
-import { BookOpen, LogOut, User as UserIcon } from "lucide-react";
-import { useState } from "react";
+import { BookOpen, LogOut } from "lucide-react";
 
 export default function Navigation() {
     const { user, loginWithGoogle, logout, loading } = useAuth();

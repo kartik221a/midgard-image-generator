@@ -31,10 +31,8 @@ export async function POST(request: Request) {
 
         return NextResponse.json({ success: true, deletedCount: publicIds.length });
 
-    } catch (error: any) {
-        console.error("Delete API Error:", error);
-        // We generally shouldn't fail the whole Delete operation if image delete fails,
-        // but monitoring it is good.
-        return NextResponse.json({ error: error.message }, { status: 500 });
+    } catch (error: unknown) {
+        console.error("Delete error:", error);
+        return NextResponse.json({ success: false, error: error instanceof Error ? error.message : "Unknown error" }, { status: 500 });
     }
 }
