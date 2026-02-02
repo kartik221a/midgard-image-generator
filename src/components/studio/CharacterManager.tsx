@@ -16,9 +16,10 @@ export interface Character {
 interface CharacterManagerProps {
     characters: Character[];
     setCharacters: (chars: Character[]) => void;
+    disabled?: boolean;
 }
 
-export default function CharacterManager({ characters, setCharacters }: CharacterManagerProps) {
+export default function CharacterManager({ characters, setCharacters, disabled = false }: CharacterManagerProps) {
     const [isAnalyzing, setIsAnalyzing] = useState(false);
 
     const onDrop = useCallback(
@@ -59,7 +60,14 @@ export default function CharacterManager({ characters, setCharacters }: Characte
     };
 
     return (
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className={cn("bg-white rounded-lg border border-gray-200 p-6 relative transition-opacity", disabled && "opacity-60 pointer-events-none")}>
+            {disabled && (
+                <div className="absolute inset-0 z-10 flex items-center justify-center bg-gray-50/50 rounded-lg backdrop-blur-[1px]">
+                    <div className="bg-white px-4 py-2 rounded-full shadow-sm text-xs font-medium text-gray-500 border">
+                        AI Enhancement Disabled
+                    </div>
+                </div>
+            )}
             <h3 className="flex items-center text-lg font-semibold text-gray-900 mb-4">
                 <User className="w-5 h-5 mr-2" />
                 Character Consistency
@@ -67,14 +75,16 @@ export default function CharacterManager({ characters, setCharacters }: Characte
 
             <div className="space-y-4">
                 <div
-                    {...getRootProps()}
+                    {...(!disabled ? getRootProps() : {})} // Disable dropzone if disabled
                     className={cn(
                         "border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer",
-                        isDragActive
+                        isDragActive && !disabled
                             ? "border-blue-500 bg-blue-50"
-                            : "border-gray-200 hover:border-blue-300 hover:bg-gray-50"
+                            : "border-gray-200 hover:border-blue-300 hover:bg-gray-50",
+                        disabled && "cursor-not-allowed bg-gray-50"
                     )}
                 >
+
                     <input {...getInputProps()} />
                     <div className="flex flex-col items-center justify-center text-gray-500">
                         {isAnalyzing ? (

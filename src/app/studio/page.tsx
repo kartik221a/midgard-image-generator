@@ -20,6 +20,7 @@ export default function StudioPage() {
     const [model, setModel] = useState("z-image-turbo");
     const [aspectRatio, setAspectRatio] = useState("1:1");
     const [bookTitle, setBookTitle] = useState("");
+    const [isAIEnabled, setIsAIEnabled] = useState(false);
 
     const { startGeneration, pauseGeneration, resumeGeneration, reset, status, currentIndex, logs, bookId } = useBulkGenerator();
 
@@ -41,7 +42,7 @@ export default function StudioPage() {
         startGeneration({
             prompts,
             characters,
-            config: { model, aspectRatio },
+            config: { model, aspectRatio, isAIEnabled },
             title: bookTitle || "Untitled Story"
         });
     };
@@ -144,10 +145,13 @@ export default function StudioPage() {
                             setModel={setModel}
                             aspectRatio={aspectRatio}
                             setAspectRatio={setAspectRatio}
+                            isAIEnabled={isAIEnabled}
+                            setIsAIEnabled={setIsAIEnabled}
                         />
                         <CharacterManager
                             characters={characters}
                             setCharacters={setCharacters}
+                            disabled={!isAIEnabled} // Disable input when AI is off
                         />
                     </div>
 

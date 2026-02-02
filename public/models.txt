@@ -1,0 +1,4 @@
+-OPEN ROUTER MODELS-
+nemotron nano 12B 2 VL : for seeing images to text
+Nous: Hermes 3 405B Instruct : for text to text
+

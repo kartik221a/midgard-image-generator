@@ -1,6 +1,6 @@
 "use client";
 
-import { Settings, Box } from "lucide-react";
+import { Settings, Box, Wand2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ConfigPanelProps {
@@ -8,6 +8,8 @@ interface ConfigPanelProps {
     setModel: (model: string) => void;
     aspectRatio: string;
     setAspectRatio: (ratio: string) => void;
+    isAIEnabled: boolean;
+    setIsAIEnabled: (enabled: boolean) => void;
 }
 
 export default function ConfigPanel({
@@ -15,6 +17,8 @@ export default function ConfigPanel({
     setModel,
     aspectRatio,
     setAspectRatio,
+    isAIEnabled,
+    setIsAIEnabled,
 }: ConfigPanelProps) {
     const models = [
         { id: "z-image-turbo", name: "Z-Image Turbo", description: "Fastest Integration (Default)" },
@@ -39,6 +43,33 @@ export default function ConfigPanel({
 
     return (
         <div className="bg-white rounded-lg border border-gray-200 p-6 space-y-8">
+            <div className="flex items-center justify-between pb-6 border-b">
+                <div>
+                    <h3 className="flex items-center text-lg font-semibold text-gray-900">
+                        <Wand2 className="w-5 h-5 mr-2 text-purple-600" />
+                        AI Enhancement
+                    </h3>
+                    <p className="text-xs text-gray-500 mt-1">
+                        Use OpenRouter for Prompt Refinement & Character Consistency
+                    </p>
+                </div>
+                <button
+                    onClick={() => setIsAIEnabled(!isAIEnabled)}
+                    className={cn(
+                        "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2",
+                        isAIEnabled ? "bg-blue-600" : "bg-gray-200"
+                    )}
+                >
+                    <span
+                        aria-hidden="true"
+                        className={cn(
+                            "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out",
+                            isAIEnabled ? "translate-x-5" : "translate-x-0"
+                        )}
+                    />
+                </button>
+            </div>
+
             <div>
                 <h3 className="flex items-center text-lg font-semibold text-gray-900 mb-4">
                     <Settings className="w-5 h-5 mr-2" />

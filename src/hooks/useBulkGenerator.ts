@@ -12,7 +12,7 @@ interface BulkGeneratorProps {
     prompts: string[];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     characters: any[];
-    config: { model: string; aspectRatio: string };
+    config: { model: string; aspectRatio: string; isAIEnabled?: boolean };
     title?: string;
 }
 
@@ -29,7 +29,7 @@ export const useBulkGenerator = () => {
         prompts: string[];
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         characters: any[];
-        config: { model: string; aspectRatio: string };
+        config: { model: string; aspectRatio: string; isAIEnabled?: boolean };
         bookId: string;
     } | null>(null);
 
@@ -80,7 +80,7 @@ export const useBulkGenerator = () => {
         activeBookId: string,
         prompts: string[],
         characters: Record<string, unknown>[],
-        config: { model: string; aspectRatio: string }
+        config: { model: string; aspectRatio: string; isAIEnabled?: boolean }
     ) => {
         // Check Status
         if (statusRef.current !== "running") return;
@@ -96,17 +96,14 @@ export const useBulkGenerator = () => {
         addLog(`Processing Page ${index + 1}/${prompts.length}...`);
 
         try {
-            // 1. Enhance Prompt (with Context if available)
-            addLog(`Enhancing prompt...`);
-            if (consistencyContextRef.current) addLog(`(Using Visual Consistency Context)`);
-
-            // Pass the CURRENT value of consistencyContext. 
-            // NOTE: implementation detail - in a recursive async function or effect loop, 
-            // state might be stale if strict closure. 
-            // However, since we re-call processQueue with updated state, or if we use a ref.
-            // A Ref is safer for the loop.
-
-            const enhancedPrompt = await enhancePrompt(rawPrompt, characters, consistencyContextRef.current || undefined);
+            let enhancedPrompt = rawPrompt;
+            if (config.isAIEnabled !== false) { // Default to true if undefined for backward compatibility or explicit check
+                addLog(`Enhancing prompt...`);
+                if (consistencyContextRef.current) addLog(`(Using Visual Consistency Context)`);
+                enhancedPrompt = await enhancePrompt(rawPrompt, characters, consistencyContextRef.current || undefined);
+            } else {
+                addLog(`Skipping enhancement (AI Disabled)...`);
+            }
 
             // 2. Generate Image
             addLog(`Generating image (${config.model})...`);
@@ -145,18 +142,19 @@ export const useBulkGenerator = () => {
             if (index === 0) {
                 await updateDoc(doc(db, "books", activeBookId), { coverImageUrl: uploadData.url });
 
-                // ANALYZE for Consistency
-                try {
-                    addLog("Analyzing character for consistency (OpenRouter)...");
-                    const visualDescription = await analyzeImage(uploadData.url); // Use Cloudinary URL (publicly accessible)
-                    if (visualDescription) {
-                        consistencyContextRef.current = visualDescription; // Update Ref
-
-                        addLog("Visual Anchor Established: " + visualDescription.slice(0, 30) + "...");
+                // ANALYZE for Consistency (Only if AI Enabled)
+                if (config.isAIEnabled !== false) {
+                    try {
+                        addLog("Analyzing character for consistency (OpenRouter)...");
+                        const visualDescription = await analyzeImage(uploadData.url); // Use Cloudinary URL (publicly accessible)
+                        if (visualDescription) {
+                            consistencyContextRef.current = visualDescription; // Update Ref
+                            addLog("Visual Anchor Established: " + visualDescription.slice(0, 30) + "...");
+                        }
+                    } catch (analysisErr) {
+                        console.error("Consistency Analysis Failed", analysisErr);
+                        addLog("Warning: Consistency analysis failed. Continuing...");
                     }
-                } catch (analysisErr) {
-                    console.error("Consistency Analysis Failed", analysisErr);
-                    addLog("Warning: Consistency analysis failed. Continuing...");
                 }
             }
 
