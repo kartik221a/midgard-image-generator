@@ -24,7 +24,11 @@ export async function POST(request: Request) {
         };
 
         if (enhance) {
-            uploadOptions.transformation = [{ effect: "improve" }];
+            uploadOptions.transformation = [
+                { effect: "improve" },      // Basic enhancement (correct SDK syntax for e_improve)
+                { effect: "sharpen:100" },  // Extra sharpness (correct SDK syntax for e_sharpen:100)
+                { effect: "upscale" }       // AI upscaling (correct SDK syntax for e_upscale)
+            ];
         }
 
         let attempts = 0;
