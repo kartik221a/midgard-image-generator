@@ -1,4 +1,4 @@
-import { v2 as cloudinary } from "cloudinary";
+import { v2 as cloudinary, UploadApiResponse, UploadApiOptions } from "cloudinary";
 import { NextResponse } from "next/server";
 
 cloudinary.config({
@@ -9,8 +9,7 @@ cloudinary.config({
 
 export async function POST(request: Request) {
     try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        let uploadResponse: Record<string, any> | undefined;
+        let uploadResponse: UploadApiResponse | undefined;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const { imageUrl, publicId, enhance } = await request.json();
 
@@ -18,7 +17,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "No image URL provided" }, { status: 400 });
         }
 
-        const uploadOptions: Record<string, any> = {
+        const uploadOptions: UploadApiOptions = {
             public_id: publicId,
             folder: "storybooks",
             timeout: 60000, // 60s timeout
