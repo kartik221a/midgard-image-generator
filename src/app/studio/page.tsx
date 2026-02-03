@@ -21,6 +21,7 @@ export default function StudioPage() {
     const [aspectRatio, setAspectRatio] = useState("1:1");
     const [bookTitle, setBookTitle] = useState("");
     const [isAIEnabled, setIsAIEnabled] = useState(false);
+    const [isImageEnhanceEnabled, setIsImageEnhanceEnabled] = useState(false);
 
     const { startGeneration, pauseGeneration, resumeGeneration, reset, status, currentIndex, logs, bookId } = useBulkGenerator();
 
@@ -42,7 +43,7 @@ export default function StudioPage() {
         startGeneration({
             prompts,
             characters,
-            config: { model, aspectRatio, isAIEnabled },
+            config: { model, aspectRatio, isAIEnabled, isImageEnhanceEnabled },
             title: bookTitle || "Untitled Story"
         });
     };
@@ -147,6 +148,8 @@ export default function StudioPage() {
                             setAspectRatio={setAspectRatio}
                             isAIEnabled={isAIEnabled}
                             setIsAIEnabled={setIsAIEnabled}
+                            isImageEnhanceEnabled={isImageEnhanceEnabled}
+                            setIsImageEnhanceEnabled={setIsImageEnhanceEnabled}
                         />
                         <CharacterManager
                             characters={characters}

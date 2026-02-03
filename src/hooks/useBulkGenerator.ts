@@ -12,7 +12,7 @@ interface BulkGeneratorProps {
     prompts: string[];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     characters: any[];
-    config: { model: string; aspectRatio: string; isAIEnabled?: boolean };
+    config: { model: string; aspectRatio: string; isAIEnabled?: boolean; isImageEnhanceEnabled?: boolean };
     title?: string;
 }
 
@@ -29,7 +29,7 @@ export const useBulkGenerator = () => {
         prompts: string[];
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         characters: any[];
-        config: { model: string; aspectRatio: string; isAIEnabled?: boolean };
+        config: { model: string; aspectRatio: string; isAIEnabled?: boolean; isImageEnhanceEnabled?: boolean };
         bookId: string;
     } | null>(null);
 
@@ -80,7 +80,7 @@ export const useBulkGenerator = () => {
         activeBookId: string,
         prompts: string[],
         characters: Record<string, unknown>[],
-        config: { model: string; aspectRatio: string; isAIEnabled?: boolean }
+        config: { model: string; aspectRatio: string; isAIEnabled?: boolean; isImageEnhanceEnabled?: boolean }
     ) => {
         // Check Status
         if (statusRef.current !== "running") return;
@@ -119,11 +119,19 @@ export const useBulkGenerator = () => {
             }
 
             // 3. Upload to Cloudinary
-            addLog("Uploading to storage...");
+            if (config.isImageEnhanceEnabled) {
+                addLog("Uploading & Enhancing Image (Cloudinary Improve)...");
+            } else {
+                addLog("Uploading to storage...");
+            }
             const publicId = `${index + 1}_${activeBookId}`;
             const uploadRes = await fetch("/api/upload", {
                 method: "POST",
-                body: JSON.stringify({ imageUrl: result.imageUrl, publicId }),
+                body: JSON.stringify({
+                    imageUrl: result.imageUrl,
+                    publicId,
+                    enhance: config.isImageEnhanceEnabled
+                }),
             });
             const uploadData = await uploadRes.json();
 

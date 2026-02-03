@@ -9,29 +9,31 @@ cloudinary.config({
 
 export async function POST(request: Request) {
     try {
-        const { imageUrl, publicId } = await request.json();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let uploadResponse: Record<string, any> | undefined;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { imageUrl, publicId, enhance } = await request.json();
 
         if (!imageUrl) {
             return NextResponse.json({ error: "No image URL provided" }, { status: 400 });
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        let uploadResponse: any;
-        // Wait, line 18 was `let uploadResponse: any`. If I change to `let uploadResponse;` it is implicitly any but maybe lint accepts it?
-        // Or `let uploadResponse: Record<string, any> | undefined;`
-        // Actually, the error `Unexpected any` usually demands explicit type.
-        // Let's use `let uploadResponse: Record<string, any> | undefined;`
+        const uploadOptions: Record<string, any> = {
+            public_id: publicId,
+            folder: "storybooks",
+            timeout: 60000, // 60s timeout
+        };
+
+        if (enhance) {
+            uploadOptions.transformation = [{ effect: "improve" }];
+        }
 
         let attempts = 0;
         const maxAttempts = 5;
 
         while (attempts < maxAttempts) {
             try {
-                uploadResponse = await cloudinary.uploader.upload(imageUrl, {
-                    public_id: publicId,
-                    folder: "storybooks",
-                    timeout: 60000, // 60s timeout
-                });
+                uploadResponse = await cloudinary.uploader.upload(imageUrl, uploadOptions);
                 break; // Success
             } catch (err) {
                 attempts++;

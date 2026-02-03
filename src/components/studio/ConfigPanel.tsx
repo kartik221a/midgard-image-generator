@@ -1,6 +1,6 @@
 "use client";
 
-import { Settings, Box, Wand2 } from "lucide-react";
+import { Settings, Box, Wand2, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ConfigPanelProps {
@@ -10,6 +10,8 @@ interface ConfigPanelProps {
     setAspectRatio: (ratio: string) => void;
     isAIEnabled: boolean;
     setIsAIEnabled: (enabled: boolean) => void;
+    isImageEnhanceEnabled: boolean;
+    setIsImageEnhanceEnabled: (enabled: boolean) => void;
 }
 
 export default function ConfigPanel({
@@ -19,6 +21,8 @@ export default function ConfigPanel({
     setAspectRatio,
     isAIEnabled,
     setIsAIEnabled,
+    isImageEnhanceEnabled,
+    setIsImageEnhanceEnabled,
 }: ConfigPanelProps) {
     const models = [
         { id: "z-image-turbo", name: "Z-Image Turbo", description: "Fastest Integration (Default)" },
@@ -65,6 +69,33 @@ export default function ConfigPanel({
                         className={cn(
                             "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out",
                             isAIEnabled ? "translate-x-5" : "translate-x-0"
+                        )}
+                    />
+                </button>
+            </div>
+
+            <div className="flex items-center justify-between pb-6 border-b">
+                <div>
+                    <h3 className="flex items-center text-lg font-semibold text-gray-900">
+                        <Sparkles className="w-5 h-5 mr-2 text-indigo-600" />
+                        Cloudinary Image Enhance
+                    </h3>
+                    <p className="text-xs text-gray-500 mt-1">
+                        Auto-improve color, contrast & clarity
+                    </p>
+                </div>
+                <button
+                    onClick={() => setIsImageEnhanceEnabled(!isImageEnhanceEnabled)}
+                    className={cn(
+                        "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2",
+                        isImageEnhanceEnabled ? "bg-indigo-600" : "bg-gray-200"
+                    )}
+                >
+                    <span
+                        aria-hidden="true"
+                        className={cn(
+                            "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out",
+                            isImageEnhanceEnabled ? "translate-x-5" : "translate-x-0"
                         )}
                     />
                 </button>
